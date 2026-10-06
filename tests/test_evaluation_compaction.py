@@ -14,5 +14,5 @@ async def test_compaction_restore_scenario_preserves_context(
     result = await run_compaction_restore_scenario(tmp_path)
 
     assert result.passed
-    assert result.model_requests == 1
+    assert result.model_requests == 2
     assert result.compactions == 1

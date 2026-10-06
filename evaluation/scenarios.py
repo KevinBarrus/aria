@@ -329,7 +329,8 @@ async def run_compaction_restore_scenario(workspace) -> EvaluationResult:
     session.add_assistant_message("旧回答" + "x" * 2_000)
     session.add_user_message("新问题")
     session.add_assistant_message("新回答")
-    client = FakeModelClient([[TextDelta(summary)]])
+    # 小窗口下两条旧消息分窗摘要，评测脚本需给每窗准备响应。
+    client = FakeModelClient([[TextDelta(summary)], [TextDelta(summary)]])
     manager = ContextManager(ContextBudget(1_000, 100, 100))
     started_at = perf_counter()
     events = [

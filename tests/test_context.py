@@ -44,6 +44,13 @@ def test_context_budget_exposes_compaction_threshold() -> None:
     assert budget.compaction_threshold == 800
 
 
+def test_summary_input_budget_uses_near_full_context_window() -> None:
+    """默认 100k 窗口为摘要留 4k 输出，输入预算应约为 81k。"""
+    manager = ContextManager(DEFAULT_CONTEXT_BUDGET)
+
+    assert manager._summary_input_budget == 81_000
+
+
 @pytest.mark.parametrize(
     "kwargs",
     [
@@ -402,7 +409,7 @@ class FakeSummaryClient:
 
     async def stream_chat(self, messages):
         self.messages.append(messages)
-        response = self.responses[self.calls]
+        response = self.responses[min(self.calls, len(self.responses) - 1)]
         self.calls += 1
         if isinstance(response, Exception):
             raise response
@@ -439,26 +446,99 @@ async def test_generate_context_summary_returns_structured_summary() -> None:
 
 
 @pytest.mark.asyncio
+async def test_summary_source_within_new_budget_is_not_omitted() -> None:
+    """约 75k token 的被压历史应全量送给摘要模型。"""
+    client = FakeSummaryClient([SUMMARY])
+    old_task = "ORIGINAL_TASK:" + "x" * 300_000
+
+    await generate_context_summary(
+        client,
+        [Message(role="user", content=old_task)],
+        max_input_tokens=ContextManager(DEFAULT_CONTEXT_BUDGET)._summary_input_budget,
+    )
+
+    request = client.messages[0][1].content
+    assert client.calls == 1
+    assert old_task in request
+    assert SUMMARY_OMITTED_NOTICE not in request
+
+
+@pytest.mark.asyncio
 async def test_generate_context_summary_limits_oversized_source() -> None:
-    """测试摘要请求会省略过旧历史并遵守独立输入预算。"""
+    """只有单条消息本身超预算时才截断并声明省略。"""
 
     client = FakeSummaryClient([SUMMARY])
     await generate_context_summary(
         client,
-        [
-            Message(role="user", content="旧消息" + "x" * 1_000),
-            Message(role="assistant", content="旧回复" + "x" * 1_000),
-            Message(role="user", content="最新问题"),
-            Message(role="assistant", content="最新回复"),
-        ],
+        [Message(role="user", content="原始任务" + "x" * 1_000)],
         max_input_tokens=200,
     )
 
     request = client.messages[0]
     assert estimate_context_tokens(request) <= 200
     assert SUMMARY_OMITTED_NOTICE in request[1].content
-    assert "最新问题" in request[1].content
-    assert "旧消息" not in request[1].content
+    assert "原始任务" in request[1].content
+
+
+class FoldingSummaryClient:
+    """把每窗的标记写进结构化摘要，便于证明最终结果累计了全部窗口。"""
+
+    def __init__(self, overflow: str | None = None) -> None:
+        self.messages: list[list[Message]] = []
+        self.overflow = overflow
+
+    async def stream_chat(self, messages):
+        self.messages.append(messages)
+        if self.overflow == "always" or (self.overflow == "first" and len(self.messages) == 1):
+            raise ModelClientError("context too long", category="context_overflow")
+        source = messages[1].content
+        markers = [marker for marker in ("ALPHA", "BETA", "GAMMA") if marker in source]
+        yield SUMMARY.replace("## Critical Context\n上下文", "## Critical Context\n" + ",".join(markers))
+
+
+@pytest.mark.asyncio
+async def test_generate_context_summary_folds_all_message_windows() -> None:
+    """多条消息超预算时逐窗折叠，不丢弃最早任务。"""
+    client = FoldingSummaryClient()
+    messages = [Message(role="user", content=marker + "x" * 20_000)
+                for marker in ("ALPHA", "BETA", "GAMMA")]
+
+    summary = await generate_context_summary(client, messages, max_input_tokens=6_000)
+
+    assert len(client.messages) == 3
+    assert all(estimate_context_tokens(request) <= 6_000 for request in client.messages)
+    assert all(SUMMARY_OMITTED_NOTICE not in request[1].content for request in client.messages)
+    assert "ALPHA,BETA,GAMMA" in summary
+
+
+@pytest.mark.asyncio
+async def test_summary_overflow_halves_window_and_keeps_all_messages() -> None:
+    """服务端拒绝一窗时从 32k 缩到 16k，再迭代处理剩余消息。"""
+    client = FoldingSummaryClient(overflow="first")
+    messages = [Message(role="user", content=marker + "x" * 32_000)
+                for marker in ("ALPHA", "BETA")]
+
+    summary = await generate_context_summary(client, messages, max_input_tokens=32_000)
+
+    assert len(client.messages) == 3
+    assert estimate_context_tokens(client.messages[1]) <= 16_000
+    assert "ALPHA,BETA" in summary
+
+
+@pytest.mark.asyncio
+async def test_summary_overflow_stops_at_16k_window_floor() -> None:
+    """16k 仍被拒绝时明确失败，不继续无限缩小。"""
+    client = FoldingSummaryClient(overflow="always")
+
+    with pytest.raises(ContextSummaryError):
+        await generate_context_summary(
+            client,
+            [Message(role="user", content="ALPHA" + "x" * 32_000)],
+            max_input_tokens=32_000,
+        )
+
+    assert len(client.messages) == 2
+    assert estimate_context_tokens(client.messages[1]) <= 16_000
 
 
 @pytest.mark.asyncio
@@ -506,7 +586,7 @@ async def test_context_manager_build_for_model_uses_summary_when_over_budget() -
     assert result[0].role == "system"
     assert "## Goal" in result[0].content
     assert result[1:] == messages[-2:]
-    assert client.calls == 1
+    assert client.calls == 2  # 小测试窗口将两条旧消息分成两窗
 
 
 @pytest.mark.asyncio
@@ -525,7 +605,7 @@ async def test_context_manager_summarizes_oversized_turn_prefix() -> None:
     assert result.compaction is not None
     assert result.messages[-1] == messages[-1]
     assert result.messages[-1] != messages[-2]
-    assert client.calls == 2
+    assert client.calls == 3  # 历史两窗，加当前超大轮次一窗
 
 
 @pytest.mark.asyncio
@@ -549,7 +629,7 @@ async def test_context_manager_keeps_tool_chain_together_in_oversized_prefix() -
 
     assert result.compaction is not None
     assert result.messages[-1] == messages[-1]
-    summary_input = client.messages[-1][1].content
+    summary_input = "\n".join(request[1].content for request in client.messages)
     assert "[tool_call] read_file" in summary_input
     assert "[tool_call_id] call-1" in summary_input
 

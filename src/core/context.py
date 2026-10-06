@@ -55,6 +55,8 @@ EVICTION_MIN_SAVINGS_TOKENS = 4_000
 # 最近内容保护：从最新工具输出往回累计约该 token 数内的输出不参与
 # 驱逐，按 token 预算而非条数保护，长输出下同样有效
 KEEP_RECENT_TOOL_OUTPUT_TOKENS = 16_000
+# 摘要通常远短于主回复，最多预留 4k 输出；小窗口沿用更小的主回复预留。
+SUMMARY_OUTPUT_RESERVE_TOKENS = 4_000
 
 
 class ContextCompactionRequired(RuntimeError):
@@ -274,7 +276,9 @@ class ContextManager:
     def _summary_input_budget(self) -> int:
         """返回摘要请求可使用的独立输入预算。"""
 
-        return max(1, self._message_budget // 2)
+        output_reserve = min(SUMMARY_OUTPUT_RESERVE_TOKENS, max(1, self._budget.reserve_tokens))
+        # 摘要不携带工具定义；85% 窗口留出估算误差，再扣除输出预留。
+        return max(1, self._budget.context_window * 85 // 100 - output_reserve)
 
     def _estimate(self, messages: Sequence[Message]) -> int:
         """估算携带当前工具定义的完整模型请求。"""
@@ -1001,68 +1005,108 @@ async def generate_context_summary(
     max_retries: int = 1,
     max_input_tokens: int | None = None,
 ) -> str:
-    """请求模型生成结构化上下文摘要，失败后按次数重试。"""
+    """正常历史单次摘要；超预算时逐窗折叠，保留最早消息。"""
 
-    last_error: Exception | None = None
-    for attempt in range(max_retries + 1):
-        system_prompt = (
-            SUMMARY_SYSTEM_PROMPT
-            if attempt == 0
-            else SUMMARY_RETRY_SYSTEM_PROMPT
-        )
-        source_messages = _limit_summary_source(
-            messages,
-            max_input_tokens,
-            system_prompt,
-        )
-        prompt = _serialize_messages(source_messages)
-        summary_messages = [
-            Message(
-                role="system",
-                content=system_prompt,
-            ),
-            Message(role="user", content=f"<conversation>\n{prompt}\n</conversation>"),
-        ]
-        try:
-            parts: list[str] = []
-            stream: AsyncIterator[str] = client.stream_chat(summary_messages)
-            async for part in stream:
-                parts.append(part)
-            summary = "".join(parts).strip()
-            if not _is_structured_summary(summary):
-                raise ContextSummaryError("model summary is missing required structure")
-            return summary
-        except (ContextSummaryError, ModelClientError) as exc:
-            last_error = exc
-    raise ContextSummaryError("context summary request failed") from last_error
+    remaining = list(messages)
+    previous_summary: str | None = None
+    window_budget = max_input_tokens
+    budget_floor = min(16_000, max_input_tokens) if max_input_tokens is not None else None
+    while remaining or previous_summary is None:
+        last_error: Exception | None = None
+        attempt = 0
+        while attempt <= max_retries:
+            system_prompt = SUMMARY_SYSTEM_PROMPT if attempt == 0 else SUMMARY_RETRY_SYSTEM_PROMPT
+            source_messages, consumed = _limit_summary_source(
+                remaining, window_budget, system_prompt, previous_summary,
+            )
+            prompt = _serialize_messages(source_messages)
+            summary_messages = [
+                Message(role="system", content=system_prompt),
+                Message(role="user", content=f"<conversation>\n{prompt}\n</conversation>"),
+            ]
+            try:
+                parts: list[str] = []
+                stream: AsyncIterator[str] = client.stream_chat(summary_messages)
+                async for part in stream:
+                    parts.append(part)
+                summary = "".join(parts).strip()
+                if not _is_structured_summary(summary):
+                    raise ContextSummaryError("model summary is missing required structure")
+                previous_summary = summary
+                remaining = remaining[consumed:]
+                break
+            except ModelClientError as exc:
+                last_error = exc
+                if exc.category == "context_overflow" and window_budget is not None:
+                    if window_budget <= budget_floor:
+                        raise ContextSummaryError("summary window overflow at 16k floor") from exc
+                    # 服务端硬拒绝时缩半重排当前窗口，已完成窗口的摘要不回退。
+                    window_budget = max(budget_floor, window_budget // 2)
+                    attempt = 0
+                    continue
+            except ContextSummaryError as exc:
+                last_error = exc
+            attempt += 1
+        else:
+            raise ContextSummaryError("context summary request failed") from last_error
+    assert previous_summary is not None
+    return previous_summary
 
 
 def _limit_summary_source(
     messages: Sequence[Message],
     max_input_tokens: int | None,
     system_prompt: str,
-) -> list[Message]:
-    """在摘要模型预算内保留最近完整历史并标记省略内容。"""
+    previous_summary: str | None = None,
+) -> tuple[list[Message], int]:
+    """从最早未摘要消息选一窗；只有单条过大时截断该条。"""
 
+    selected = ([Message(role="system", content=f"Previous conversation summary:\n{previous_summary}")]
+                if previous_summary is not None else [])
     if max_input_tokens is None:
-        return list(messages)
+        return [*selected, *messages], len(messages)
 
-    wrapper_tokens = estimate_text_tokens("<conversation>\n\n</conversation>")
-    source_budget = max_input_tokens - estimate_text_tokens(system_prompt) - wrapper_tokens
-    if source_budget <= 0:
+    fixed = estimate_model_request_tokens([
+        Message(role="system", content=system_prompt),
+        Message(role="user", content="<conversation>\n\n</conversation>"),
+    ])
+    source_budget = max_input_tokens - fixed
+    if source_budget <= 0 or _serialized_source_tokens(selected) > source_budget:
         raise ContextSummaryError("summary input budget insufficient")
-    if estimate_context_tokens(messages) <= source_budget:
-        return list(messages)
 
+    consumed = 0
+    for message in messages:
+        if _serialized_source_tokens([*selected, message]) > source_budget:
+            break
+        selected.append(message)
+        consumed += 1
+    if consumed or not messages:
+        return selected, consumed
+
+    # 一条消息超过整窗时才允许声明省略，并尽量保留该条的开头。
     notice = Message(role="system", content=SUMMARY_OMITTED_NOTICE)
-    remaining_budget = source_budget - estimate_message_tokens(notice)
-    if remaining_budget <= 0:
-        shortened_notice = _truncate_message(notice, source_budget)
-        return [shortened_notice] if shortened_notice is not None else []
+    low, high = 0, len(messages[0].content)
+    best: Message | None = None
+    while low <= high:
+        middle = (low + high) // 2
+        candidate = replace(
+            messages[0],
+            content=messages[0].content[:middle] + ("…" if middle < len(messages[0].content) else ""),
+        )
+        if _serialized_source_tokens([*selected, notice, candidate]) <= source_budget:
+            best = candidate
+            low = middle + 1
+        else:
+            high = middle - 1
+    if best is None:
+        raise ContextSummaryError("single summary message cannot fit budget")
+    return [*selected, notice, best], 1
 
-    selected = select_recent_messages(messages, remaining_budget)
-    result = [notice, *selected]
-    return _fit_messages_to_budget(result, source_budget)
+
+def _serialized_source_tokens(messages: Sequence[Message]) -> int:
+    """保守估算序列化后实际发送的文本，包含角色标签与分隔符。"""
+
+    return sum(estimate_text_tokens(_serialize_messages([message])) for message in messages) + max(0, len(messages) - 1)
 
 
 def _serialize_messages(messages: Sequence[Message]) -> str:
