@@ -167,7 +167,7 @@ async def test_model_save_keeps_background_key(
 ) -> None:
     """测试 /model 保存后 background 配置仍然保留。"""
 
-    settings_path = tmp_path / ".epsilon" / "settings.json"
+    settings_path = tmp_path / ".aria" / "settings.json"
     _write_settings(
         settings_path,
         {"current": "wall", "transparency": 0.5, "images": {"wall": "/tmp/a.png"}},

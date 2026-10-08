@@ -25,7 +25,7 @@ _TRANSPARENCY_RE = re.compile(r"^\d+\.\d{2}$")
 def _settings_path(project_dir: Path) -> Path:
     """返回背景图配置所在的 settings.json 路径。"""
 
-    return project_dir / ".epsilon" / "settings.json"
+    return project_dir / ".aria" / "settings.json"
 
 
 def _read_background(path: Path) -> dict:

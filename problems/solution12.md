@@ -42,7 +42,7 @@
 ## 问题一/七：Logo 方块字 + 对话区化
 
 - logo 改为对话区第一条内容（新建会话时作为首条消息加入对话，随对话滚动）
-- `ε - EPSILON` 方块字 ASCII art（DefaultLogoProvider 替换为方块字渲染）
+- `ε - ARIA` 方块字 ASCII art（DefaultLogoProvider 替换为方块字渲染）
 - 下方引导：/ 命令（/model /compact /skills /mcp）、↑/↓+鼠标选择、背景图、缩放、输入框 markdown 说明
 
 ## 问题六：屏幕缩放

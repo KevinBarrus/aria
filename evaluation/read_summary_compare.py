@@ -201,7 +201,7 @@ def prepare(arm: str, source: Path) -> Path:
 
     if arm not in ARMS:
         raise ValueError(f"unknown arm: {arm}")
-    root = Path(tempfile.mkdtemp(prefix=f"epsilon-read-{arm}-"))
+    root = Path(tempfile.mkdtemp(prefix=f"aria-read-{arm}-"))
     workspace = root / "workspace"
     stats = copy_repository(source, workspace)
     (root / "baseline.json").write_text(
@@ -691,7 +691,7 @@ def main() -> int:
     if not args.confirm or args.workspace is None or not args.arm:
         parser.error("真机运行需要 --arm、--workspace 与 --confirm")
     workspace = args.workspace.resolve()
-    if not workspace.is_dir() or not workspace.parent.name.startswith("epsilon-read-"):
+    if not workspace.is_dir() or not workspace.parent.name.startswith("aria-read-"):
         parser.error("workspace 必须是本脚本创建的独立副本")
     baseline = json.loads((workspace.parent / "baseline.json").read_text(encoding="utf-8"))
     if baseline.get("arm") != args.arm:

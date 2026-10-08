@@ -635,7 +635,7 @@ def _append_record(path: Path, record: dict[str, object]) -> None:
 def main() -> int:
     """处理长任务评测的命令行参数。"""
 
-    parser = argparse.ArgumentParser(description="运行 Epsilon 长任务评测")
+    parser = argparse.ArgumentParser(description="运行 Aria 长任务评测")
     parser.add_argument("--confirm", action="store_true", help="确认发起真实模型请求")
     parser.add_argument("--instance-id", required=True, help="SWE-bench 任务 ID")
     parser.add_argument("--source", default="swebench-lite")

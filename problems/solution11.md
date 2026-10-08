@@ -43,7 +43,7 @@
 
 ## 问题七/八：起始信息
 
-- logo：`epsilon v{version}`（加粗 accent 色，Pi 风格）
+- logo：`aria v{version}`（加粗 accent 色，Pi 风格）
 - 操作提示：`c-d exit · / commands · Esc cancel · ↑/↓ select`（dim）
 - 当前可用 skill 名称列表
 - `[Context]` 栏（mdHeading 标题色）：内置 agent.md + 项目 AGENTS.md 路径（相对/`~` 缩写，dim）

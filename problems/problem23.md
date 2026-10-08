@@ -2,7 +2,7 @@
 
 ## 一、问题背景
 
-Epsilon 的真实 SWE-bench 评测分为两个阶段：
+Aria 的真实 SWE-bench 评测分为两个阶段：
 
 ```text
 Agent 阶段
@@ -80,6 +80,6 @@ RuntimeWarning: TestResult has no addDuration method
 
 ## 六、边界
 
-- 本问题只处理 SWE-bench 评测环境一致性，不改变普通用户运行 Epsilon 时的宿主执行行为
+- 本问题只处理 SWE-bench 评测环境一致性，不改变普通用户运行 Aria 时的宿主执行行为
 - 不向模型暴露参考补丁、隐藏测试补丁或官方评测脚本
 - 容器内命令结果仍不是最终裁判，最终通过率只以独立官方 Harness 为准

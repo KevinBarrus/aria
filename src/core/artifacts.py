@@ -29,7 +29,7 @@ class Artifact:
 
 
 class ArtifactStore:
-    """在工作区 .epsilon/artifacts 下按会话保存输出原文。
+    """在工作区 .aria/artifacts 下按会话保存输出原文。
 
     文件布局 artifacts/<session_id>/<id>.<tool_type>.txt，id 为会话内递增序号，
     会话归属由子目录表达。set_session_id 绑定后，load/resolve 默认在该会话目录内查找。
@@ -45,7 +45,7 @@ class ArtifactStore:
     def for_workspace(cls, workspace: Path) -> "ArtifactStore":
         """创建生产工作区默认位置的项目级 store。"""
 
-        return cls(workspace / ".epsilon" / "artifacts")
+        return cls(workspace / ".aria" / "artifacts")
 
     def set_session_id(self, session_id: str) -> None:
         """绑定当前会话，load/resolve 默认在其会话目录内查找。"""

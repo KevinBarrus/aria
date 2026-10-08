@@ -902,7 +902,7 @@ def test_context_manager_injects_model_name_into_system_prompt() -> None:
 
     manager = ContextManager(
         DEFAULT_CONTEXT_BUDGET,
-        system_prompt="你是运行在 epsilon 里的助手，由 {model_name} 驱动。",
+        system_prompt="你是运行在 aria 里的助手，由 {model_name} 驱动。",
     )
 
     manager.set_model_name("deepseek-v4-pro")

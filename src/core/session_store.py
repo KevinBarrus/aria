@@ -66,7 +66,7 @@ class SessionStore:
     def __init__(self, workspace: Path) -> None:
         """记录工作区路径，不提前创建运行时目录。"""
 
-        self._sessions_dir = workspace / ".epsilon" / "sessions"
+        self._sessions_dir = workspace / ".aria" / "sessions"
 
     def acquire_session_lock(self, session_id: str) -> TextIO:
         """非阻塞获取指定 Session 的跨进程独占锁。"""

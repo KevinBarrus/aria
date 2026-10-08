@@ -2,7 +2,7 @@
 
 ## 一、问题背景
 
-针对"Epsilon 改造为面向 DeepSeek 的 Coding Agent Harness"的交接说明，本轮做了三类核对：
+针对"Aria 改造为面向 DeepSeek 的 Coding Agent Harness"的交接说明，本轮做了三类核对：
 
 1. 通读 `src/core` 相关模块（context、agent_loop、openai_client、cost、memory、tools/*、skills/*）与 `evaluation/`（swebench、online、models、fakes）
 2. 对基线 `swebench-batch2-80-final` 与 `-cont` 的 `results.jsonl` 做全量统计（12 题、881 条工具结果逐条回放）

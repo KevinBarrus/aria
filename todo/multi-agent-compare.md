@@ -6,7 +6,7 @@
 
 ## 配置（只改"委派"这一个变量）
 
-- **任务**：复制 epsilon 到副本，把副本 `src/core` 从 Python 重构成等价 TypeScript；harness 从原代码跑；
+- **任务**：复制 aria 到副本，把副本 `src/core` 从 Python 重构成等价 TypeScript；harness 从原代码跑；
 - **模型**：`deepseek-flash`，`thinking=high`；
 - **goal**：objective 与单 Agent 完全一致，预算同样**只有安全熔断**（`token_budget=50_000_000`、`time_budget_seconds=7200`），跑到 `goal complete` 或熔断；
 - **委派**：**开** —— 注册 `spawn_agent`（Scout）/`spawn_worker`(Worker) / `spawn_reviewer`(Reviewer) 并注入子 Agent 使用说明。

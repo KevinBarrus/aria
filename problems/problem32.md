@@ -2,15 +2,15 @@
 
 ## 一、背景与问题
 
-Epsilon 的模型接入目前只有一条路：`config.py` 里的 `api_key` + `base_url`，所有模型都走 OpenAI-compatible API。首次启动引导也只让用户"选服务商 + 填 API key"。
+Aria 的模型接入目前只有一条路：`config.py` 里的 `api_key` + `base_url`，所有模型都走 OpenAI-compatible API。首次启动引导也只让用户"选服务商 + 填 API key"。
 
-这带来的真实问题：**拥有订阅的用户无法使用 Epsilon**。
+这带来的真实问题：**拥有订阅的用户无法使用 Aria**。
 
 - 智谱 GLM Coding Plan 用户：有订阅额度，但被迫去开 API key；
-- OpenAI 会员（ChatGPT / Codex Plus）用户：有订阅额度，但 Epsilon 没有"登录认证"入口，只能调 API；
+- OpenAI 会员（ChatGPT / Codex Plus）用户：有订阅额度，但 Aria 没有"登录认证"入口，只能调 API；
 - Anthropic 订阅用户：同理。
 
-而有订阅的用户是**大多数**，愿意"开 API key、按 token 付费"的是少数。模型接入渠道缺失，直接决定了用户愿不愿意用 Epsilon。
+而有订阅的用户是**大多数**，愿意"开 API key、按 token 付费"的是少数。模型接入渠道缺失，直接决定了用户愿不愿意用 Aria。
 
 ## 二、参考项目的做法
 
@@ -24,7 +24,7 @@ Epsilon 的模型接入目前只有一条路：`config.py` 里的 `api_key` + `b
 模型接入从单渠道扩展为双渠道：
 
 1. **保留 API key 渠道**（OpenAI-compatible，一个 client 通吃兼容服务商）；
-2. **新增订阅认证渠道**（OAuth 登录）：用户用自己的订阅账号认证，Epsilon 通过订阅渠道调用模型，不需要 API key。
+2. **新增订阅认证渠道**（OAuth 登录）：用户用自己的订阅账号认证，Aria 通过订阅渠道调用模型，不需要 API key。
 
 ## 四、现实边界与工程量（不要低估）
 

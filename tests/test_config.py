@@ -15,9 +15,9 @@ def _write_user_settings(tmp_path: Path, data: dict) -> Path:
 
 
 def _write_project_settings(project_dir: Path, data: dict) -> Path:
-    """在项目级 .epsilon 目录写入测试用的项目 settings.json。"""
+    """在项目级 .aria 目录写入测试用的项目 settings.json。"""
 
-    path = project_dir / ".epsilon" / "settings.json"
+    path = project_dir / ".aria" / "settings.json"
     path.parent.mkdir(parents=True)
     path.write_text(json.dumps(data), encoding="utf-8")
     return path

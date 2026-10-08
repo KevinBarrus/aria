@@ -32,7 +32,7 @@ from .tools import ToolManager
 # 用 ContextVar 而不是改 ToolHandler 签名；asyncio 在 create_task 时会复制它，
 # 因此子 Agent 的写入不会污染父 Agent。
 PARENT_CONTEXT: ContextVar[tuple[Message, ...] | None] = ContextVar(
-    "epsilon_parent_context", default=None
+    "aria_parent_context", default=None
 )
 
 

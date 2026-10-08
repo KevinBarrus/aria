@@ -27,7 +27,7 @@ class SkillManager:
         """记录项目与全局 skill 根目录并准备空的激活集合。"""
 
         self._skills_roots: list[tuple[Path, str]] = [
-            (workspace / ".epsilon" / "skills", "project")
+            (workspace / ".aria" / "skills", "project")
         ]
         global_dir = global_skills_dir or Path.home() / ".agents" / "skills"
         self._skills_roots.append((global_dir, "global"))

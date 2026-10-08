@@ -6,7 +6,7 @@
 
 ## 唯一方案
 
-评测容器仍使用官方实例镜像和 `/testbed`，但运行 Agent 命令时使用启动 Epsilon 评测进程的有效 UID/GID，而不是容器 root：
+评测容器仍使用官方实例镜像和 `/testbed`，但运行 Agent 命令时使用启动 Aria 评测进程的有效 UID/GID，而不是容器 root：
 
 ```text
 宿主评测进程 UID:GID

@@ -6,7 +6,7 @@
 
 ## 配置
 
-- **任务**：复制 epsilon 到副本（排除 `.venv`/`.git`/`evaluation-results`/`__pycache__`/`.epsilon`），把副本 `src/core` 从 Python 重构成**功能等价**的 TypeScript；harness 从原代码跑，模型只改副本；
+- **任务**：复制 aria 到副本（排除 `.venv`/`.git`/`evaluation-results`/`__pycache__`/`.aria`），把副本 `src/core` 从 Python 重构成**功能等价**的 TypeScript；harness 从原代码跑，模型只改副本；
 - **模型**：`deepseek-flash`（V4.1 Flash），`thinking=high`；
 - **委派**：关闭（单 Agent）；
 - **goal**：

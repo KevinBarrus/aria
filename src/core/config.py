@@ -1,4 +1,4 @@
-"""加载并校验 epsilon 的运行配置。"""
+"""加载并校验 aria 的运行配置。"""
 
 import json
 from dataclasses import dataclass
@@ -141,15 +141,15 @@ def load_settings(
 ) -> Settings:
     """从用户级与项目级 settings.json 读取配置并完成基础校验。
 
-    用户级配置（~/.epsilon/settings.json）提供默认值；项目级配置
-    （<项目目录>/.epsilon/settings.json）按字段覆盖用户级配置。
+    用户级配置（~/.aria/settings.json）提供默认值；项目级配置
+    （<项目目录>/.aria/settings.json）按字段覆盖用户级配置。
     """
 
     user_path = (user_config_path or default_user_config_path()).resolve()
     if not user_path.is_file():
         raise ConfigError(
             f"User config not found: {user_path}\n"
-            "Run epsilon to set up, or create the file manually"
+            "Run aria to set up, or create the file manually"
         )
     merged_data = _read_config_json(user_path)
     project_path = _project_config_path(project_dir)
@@ -161,14 +161,14 @@ def load_settings(
 def default_user_config_path() -> Path:
     """返回用户级配置的默认位置。"""
 
-    return Path.home() / ".epsilon" / "settings.json"
+    return Path.home() / ".aria" / "settings.json"
 
 
 def _project_config_path(project_dir: Path | None) -> Path:
     """返回项目级配置的位置，未指定项目目录时使用当前工作目录。"""
 
     root = (project_dir or Path.cwd()).resolve()
-    return root / ".epsilon" / "settings.json"
+    return root / ".aria" / "settings.json"
 
 
 def _read_config_json(path: Path) -> dict:

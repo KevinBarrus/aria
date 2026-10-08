@@ -212,7 +212,7 @@ async def test_model_command_new_config_writes_project_settings(
     await model_command_slash.handler(context)
 
     project_settings = json.loads(
-        (tmp_path / ".epsilon" / "settings.json").read_text(encoding="utf-8")
+        (tmp_path / ".aria" / "settings.json").read_text(encoding="utf-8")
     )
     assert project_settings["model"] == {
         "base_url": "https://api.deepseek.com/",
@@ -251,7 +251,7 @@ async def test_model_command_new_config_manual_model_when_list_fails(
     await model_command_slash.handler(context)
 
     project_settings = json.loads(
-        (tmp_path / ".epsilon" / "settings.json").read_text(encoding="utf-8")
+        (tmp_path / ".aria" / "settings.json").read_text(encoding="utf-8")
     )
     assert project_settings["model"] == {
         "base_url": "https://custom.example.com/v1",

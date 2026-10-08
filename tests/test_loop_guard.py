@@ -641,7 +641,7 @@ def test_settings_parses_completion_gate_object(tmp_path: Path) -> None:
 def test_settings_completion_gate_defaults(tmp_path: Path) -> None:
     """缺省时完成门默认开启，且超时默认 300 秒、验证器预算默认 2M。"""
 
-    settings = load_settings(_write_settings(tmp_path, _valid_settings()))
+    settings = load_settings(user_config_path=_write_settings(tmp_path, _valid_settings()))
 
     assert settings.completion_gate_enabled is True
     assert settings.completion_gate_max_rejections == 2

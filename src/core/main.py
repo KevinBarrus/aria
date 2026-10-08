@@ -1,4 +1,4 @@
-"""epsilon 的程序启动入口"""
+"""aria 的程序启动入口"""
 
 import asyncio
 import argparse
@@ -93,7 +93,7 @@ def format_exit_summary(exit_info: ChatExitInfo | None) -> list[str]:
         ]
     if exit_info.session_id is not None:
         lines.append(
-            f"To continue this session, run epsilon resume {exit_info.session_id}"
+            f"To continue this session, run aria resume {exit_info.session_id}"
         )
     return lines
 
@@ -101,7 +101,7 @@ def format_exit_summary(exit_info: ChatExitInfo | None) -> list[str]:
 def main(argv: Sequence[str] | None = None) -> int:
     """处理启动阶段的错误并返回进程退出码"""
 
-    parser = argparse.ArgumentParser(description="Start epsilon")
+    parser = argparse.ArgumentParser(description="Start aria")
     parser.add_argument(
         "--config",
         type=Path,

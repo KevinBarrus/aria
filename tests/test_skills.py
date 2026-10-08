@@ -25,8 +25,8 @@ def _make_manager(tmp_path: Path) -> SkillManager:
 def test_list_skills_parses_frontmatter(tmp_path: Path) -> None:
     """测试项目 skill 扫描能解析 name、description 并标注来源。"""
 
-    _write_skill(tmp_path / ".epsilon" / "skills", "git", "name: git-commit\ndescription: 生成提交信息\n", "提交正文")
-    _write_skill(tmp_path / ".epsilon" / "skills", "api", "name: api-guide\ndescription: API 指南\n", "API 正文")
+    _write_skill(tmp_path / ".aria" / "skills", "git", "name: git-commit\ndescription: 生成提交信息\n", "提交正文")
+    _write_skill(tmp_path / ".aria" / "skills", "api", "name: api-guide\ndescription: API 指南\n", "API 正文")
 
     skills = _make_manager(tmp_path).list_skills()
 
@@ -45,7 +45,7 @@ def test_list_skills_returns_empty_without_skills_directory(tmp_path: Path) -> N
 def test_list_skills_falls_back_to_directory_name(tmp_path: Path) -> None:
     """测试缺少 frontmatter 时用目录名作为 skill 名。"""
 
-    skill_dir = tmp_path / ".epsilon" / "skills" / "plain"
+    skill_dir = tmp_path / ".aria" / "skills" / "plain"
     skill_dir.mkdir(parents=True)
     (skill_dir / "SKILL.md").write_text("无 frontmatter 的正文", encoding="utf-8")
 
@@ -57,7 +57,7 @@ def test_list_skills_falls_back_to_directory_name(tmp_path: Path) -> None:
 def test_list_skills_merges_project_and_global_roots(tmp_path: Path) -> None:
     """测试项目与全局 skill 根目录会被合并扫描并分别标注来源。"""
 
-    _write_skill(tmp_path / ".epsilon" / "skills", "git", "name: project-skill\ndescription: 项目 skill\n", "项目正文")
+    _write_skill(tmp_path / ".aria" / "skills", "git", "name: project-skill\ndescription: 项目 skill\n", "项目正文")
     _write_skill(tmp_path / "global", "lint", "name: global-skill\ndescription: 全局 skill\n", "全局正文")
 
     skills = _make_manager(tmp_path).list_skills()
@@ -71,7 +71,7 @@ def test_list_skills_merges_project_and_global_roots(tmp_path: Path) -> None:
 def test_list_skills_keeps_duplicate_names_with_sources(tmp_path: Path) -> None:
     """测试项目与全局同名 skill 时两个都保留，用来源区分。"""
 
-    _write_skill(tmp_path / ".epsilon" / "skills", "git", "name: git-commit\ndescription: 项目版本\n", "项目正文")
+    _write_skill(tmp_path / ".aria" / "skills", "git", "name: git-commit\ndescription: 项目版本\n", "项目正文")
     _write_skill(tmp_path / "global", "git", "name: git-commit\ndescription: 全局版本\n", "全局正文")
 
     skills = _make_manager(tmp_path).list_skills()
@@ -102,7 +102,7 @@ def test_activate_deactivate_and_set_active(tmp_path: Path) -> None:
 def test_active_system_messages_includes_source_and_body(tmp_path: Path) -> None:
     """测试激活的 skill 会转换为带来源标注的系统消息。"""
 
-    _write_skill(tmp_path / ".epsilon" / "skills", "git", "name: git-commit\ndescription: x\n", "规范提交正文")
+    _write_skill(tmp_path / ".aria" / "skills", "git", "name: git-commit\ndescription: x\n", "规范提交正文")
     _write_skill(tmp_path / "global", "lint", "name: lint-guide\ndescription: y\n", "全局 lint 正文")
 
     manager = _make_manager(tmp_path)

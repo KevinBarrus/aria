@@ -42,13 +42,13 @@ from .online import TimedModelClient
 
 
 SOURCE = Path(__file__).resolve().parents[1]
-EXCLUDED = (".venv", ".git", "evaluation-results", ".epsilon", "__pycache__")
+EXCLUDED = (".venv", ".git", "evaluation-results", ".aria", "__pycache__")
 IMAGE = "swebench/sweb.eval.x86_64.django_1776_django-11001:latest"
 TOKEN_FUSE = 120_000_000
 TIME_FUSE_SECONDS = 10_800
 OBJECTIVE = "把副本 src/core 的全部 Python 模块重构成等价的 TypeScript，直到全部模块都有对应 TS 实现且类型检查通过"
 TASK = (
-    "你的工作区是 Epsilon 项目的副本。把 src/core/ 下的全部 Python 源代码重构成 TypeScript，"
+    "你的工作区是 Aria 项目的副本。把 src/core/ 下的全部 Python 源代码重构成 TypeScript，"
     "保持功能等价，输出到 ts/ 目录并保持对应的模块结构。系统规划、逐步完成；"
     "可以用进度文件记录已完成和待完成模块。完成前检查全部模块映射和 TypeScript 类型检查。"
 )
@@ -95,7 +95,7 @@ def prepare_copy(*, isolation_enabled: bool = False, source_core: Path | None = 
     """创建不含仓库元数据和运行时状态的独立副本。"""
     if isolation_enabled and source_core is None:
         raise ValueError("worktree comparison requires archived source_core")
-    root = Path(tempfile.mkdtemp(prefix="epsilon-single-goal-"))
+    root = Path(tempfile.mkdtemp(prefix="aria-single-goal-"))
     workspace = root / "workspace"
     shutil.copytree(SOURCE, workspace, ignore=shutil.ignore_patterns(*EXCLUDED))
     if source_core is not None:
@@ -133,7 +133,7 @@ def _initialize_copy_git(workspace: Path) -> None:
             encoding="utf-8",
         )
     git("init")
-    git("config", "user.name", "Epsilon Evaluation")
+    git("config", "user.name", "Aria Evaluation")
     git("config", "user.email", "evaluation@example.invalid")
     # node_modules 由模型在副本安装；不纳入 Worker 分支或基线提交。
     exclude = workspace / ".git/info/exclude"
@@ -220,7 +220,7 @@ class CopyCommandExecutor:
         """容器只获得副本的读写挂载和 Node 工具链的只读挂载。"""
         if cwd.resolve() != self.workspace:
             raise ValueError("命令工作目录必须是实验副本")
-        name = f"epsilon-goal-{uuid.uuid4().hex[:12]}"
+        name = f"aria-goal-{uuid.uuid4().hex[:12]}"
         process = await asyncio.create_subprocess_exec(
             "docker", "run", "--rm", "--name", name,
             "--user", f"{os.getuid()}:{os.getgid()}",
@@ -645,7 +645,7 @@ def main() -> int:
     if not args.confirm or args.workspace is None:
         parser.error("真机运行需要 --workspace 和 --confirm，并须先获得费用确认")
     workspace = args.workspace.resolve()
-    if not workspace.is_dir() or not workspace.parent.name.startswith("epsilon-single-goal-"):
+    if not workspace.is_dir() or not workspace.parent.name.startswith("aria-single-goal-"):
         parser.error("workspace 必须是本脚本创建的独立副本")
     baseline = json.loads((workspace.parent / "baseline.json").read_text(encoding="utf-8"))
     if bool(baseline.get("isolation_enabled")) != args.isolate_workers:

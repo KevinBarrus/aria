@@ -30,11 +30,11 @@ Logo 不应固定显示在屏幕顶部，而应作为对话区的第一条内容
 
 ## 问题六：屏幕缩放
 
-支持 Ctrl+滚轮或触摸板缩放。触摸板 pinch 本质由终端处理（或转成 Ctrl+滚轮），epsilon 检测 Ctrl+滚轮发送字体缩放序列（支持终端才生效），WSL/Windows Terminal 原生缩放自然生效。
+支持 Ctrl+滚轮或触摸板缩放。触摸板 pinch 本质由终端处理（或转成 Ctrl+滚轮），aria 检测 Ctrl+滚轮发送字体缩放序列（支持终端才生效），WSL/Windows Terminal 原生缩放自然生效。
 
 ## 问题七：Logo 设计
 
-展示 `ε - EPSILON` 方块字（命令行方块拼成），下方引导基本操作：`/` 命令（/model /compact /skills /mcp）、↑/↓+鼠标选择、切换背景图、屏幕缩放等。
+展示 `ε - ARIA` 方块字（命令行方块拼成），下方引导基本操作：`/` 命令（/model /compact /skills /mcp）、↑/↓+鼠标选择、切换背景图、屏幕缩放等。
 
 ## 问题八：背景图功能
 

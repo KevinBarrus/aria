@@ -17,7 +17,7 @@
 
 - 模型：`deepseek-v4-pro`
 - 思考强度：`high`
-- 工作区：当前 Epsilon 仓库
+- 工作区：当前 Aria 仓库
 - 父 Agent 最大工具轮次：30
 - Scout 最大工具轮次：8
 - Scout 并发上限：3

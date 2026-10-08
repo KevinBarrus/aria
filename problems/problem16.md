@@ -22,7 +22,7 @@
 - 已完成的对话写入终端主屏幕回滚区
 - Ctrl+D 退出后仍可直接滚动查看本次对话
 - 退出后展示本次运行的 Token 用量
-- 退出后展示 `epsilon resume <session-id>` 恢复指引
+- 退出后展示 `aria resume <session-id>` 恢复指引
 
 ## 问题三：稳定历史与临时界面混在同一个容器
 

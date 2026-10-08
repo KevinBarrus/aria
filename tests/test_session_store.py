@@ -17,7 +17,7 @@ def test_append_creates_session_file_and_directory(tmp_path: Path) -> None:
 
     store.append_message(session_id, Message(role="user", content="你好"))
 
-    session_path = tmp_path / ".epsilon" / "sessions" / f"{session_id}.jsonl"
+    session_path = tmp_path / ".aria" / "sessions" / f"{session_id}.jsonl"
     assert session_path.exists()
     assert session_path.parent.is_dir()
 
@@ -30,7 +30,7 @@ def test_jsonl_contains_one_json_record_per_line(tmp_path: Path) -> None:
     store.append_message(session_id, Message(role="user", content="你好"))
     store.append_message(session_id, Message(role="assistant", content="你好！"))
 
-    path = tmp_path / ".epsilon" / "sessions" / f"{session_id}.jsonl"
+    path = tmp_path / ".aria" / "sessions" / f"{session_id}.jsonl"
     records = [json.loads(line) for line in path.read_text(encoding="utf-8").splitlines()]
 
     assert records == [
@@ -76,7 +76,7 @@ def test_load_messages_ignores_incomplete_tail_record(tmp_path: Path) -> None:
 
     store = SessionStore(tmp_path)
     session_id = str(uuid.uuid4())
-    path = tmp_path / ".epsilon" / "sessions" / f"{session_id}.jsonl"
+    path = tmp_path / ".aria" / "sessions" / f"{session_id}.jsonl"
     path.parent.mkdir(parents=True)
     path.write_text(
         '{"type":"message","role":"user","content":"历史"}\n'
@@ -94,7 +94,7 @@ def test_load_compactions_ignores_incomplete_tail_record(tmp_path: Path) -> None
 
     store = SessionStore(tmp_path)
     session_id = str(uuid.uuid4())
-    path = tmp_path / ".epsilon" / "sessions" / f"{session_id}.jsonl"
+    path = tmp_path / ".aria" / "sessions" / f"{session_id}.jsonl"
     path.parent.mkdir(parents=True)
     path.write_text(
         '{"type":"compaction","summary":"摘要",'
@@ -150,7 +150,7 @@ def test_invalid_compaction_record_raises_clear_error(
 
     store = SessionStore(tmp_path)
     session_id = str(uuid.uuid4())
-    path = tmp_path / ".epsilon" / "sessions" / f"{session_id}.jsonl"
+    path = tmp_path / ".aria" / "sessions" / f"{session_id}.jsonl"
     path.parent.mkdir(parents=True)
     path.write_text(record + "\n", encoding="utf-8")
 
@@ -192,7 +192,7 @@ def test_jsonl_persists_assistant_error_status(tmp_path: Path) -> None:
 
     store.append_message(session_id, expected)
 
-    path = tmp_path / ".epsilon" / "sessions" / f"{session_id}.jsonl"
+    path = tmp_path / ".aria" / "sessions" / f"{session_id}.jsonl"
     record = json.loads(path.read_text(encoding="utf-8"))
     assert record["status"] == "error"
     assert record["error_category"] == "network"
@@ -239,7 +239,7 @@ def test_invalid_records_raise_clear_errors(
 
     store = SessionStore(tmp_path)
     session_id = str(uuid.uuid4())
-    path = tmp_path / ".epsilon" / "sessions" / f"{session_id}.jsonl"
+    path = tmp_path / ".aria" / "sessions" / f"{session_id}.jsonl"
     path.parent.mkdir(parents=True)
     path.write_text(content + "\n", encoding="utf-8")
 
@@ -252,7 +252,7 @@ def test_unknown_record_types_are_skipped_on_restore(tmp_path: Path) -> None:
 
     store = SessionStore(tmp_path)
     session_id = str(uuid.uuid4())
-    path = tmp_path / ".epsilon" / "sessions" / f"{session_id}.jsonl"
+    path = tmp_path / ".aria" / "sessions" / f"{session_id}.jsonl"
     path.parent.mkdir(parents=True)
     path.write_text(
         '{"type":"message","role":"user","content":"问题"}\n'
@@ -285,8 +285,8 @@ def test_list_sessions_returns_titles_and_recent_first(tmp_path: Path) -> None:
     store.append_message(older_id, Message(role="user", content="旧会话"))
     store.append_message(newer_id, Message(role="user", content="新会话"))
 
-    older_path = tmp_path / ".epsilon" / "sessions" / f"{older_id}.jsonl"
-    newer_path = tmp_path / ".epsilon" / "sessions" / f"{newer_id}.jsonl"
+    older_path = tmp_path / ".aria" / "sessions" / f"{older_id}.jsonl"
+    newer_path = tmp_path / ".aria" / "sessions" / f"{newer_id}.jsonl"
     older_time = newer_path.stat().st_mtime - 10
     older_path.touch()
     newer_path.touch()
@@ -310,7 +310,7 @@ def test_list_sessions_truncates_title_and_uses_id_for_empty_session(
     empty_id = str(uuid.uuid4())
     long_title = "这是一个很长的会话标题\n" + "内容" * 30
     store.append_message(long_id, Message(role="user", content=long_title))
-    empty_path = tmp_path / ".epsilon" / "sessions" / f"{empty_id}.jsonl"
+    empty_path = tmp_path / ".aria" / "sessions" / f"{empty_id}.jsonl"
     empty_path.touch()
 
     summaries = {
@@ -330,7 +330,7 @@ def test_list_sessions_reads_only_until_first_user_message(
 
     store = SessionStore(tmp_path)
     session_id = str(uuid.uuid4())
-    path = tmp_path / ".epsilon" / "sessions" / f"{session_id}.jsonl"
+    path = tmp_path / ".aria" / "sessions" / f"{session_id}.jsonl"
     path.parent.mkdir(parents=True)
     path.write_text(
         '{"type":"message","role":"user","content":"首条标题"}\n'
@@ -356,7 +356,7 @@ def test_list_sessions_ignores_incomplete_tail_before_any_user_message(
 
     store = SessionStore(tmp_path)
     session_id = str(uuid.uuid4())
-    path = tmp_path / ".epsilon" / "sessions" / f"{session_id}.jsonl"
+    path = tmp_path / ".aria" / "sessions" / f"{session_id}.jsonl"
     path.parent.mkdir(parents=True)
     path.write_text(
         '{"type":"message","role":"assistant","content":"历史"}\n'
@@ -372,7 +372,7 @@ def test_list_sessions_rejects_corrupted_file(tmp_path: Path) -> None:
 
     store = SessionStore(tmp_path)
     session_id = str(uuid.uuid4())
-    path = tmp_path / ".epsilon" / "sessions" / f"{session_id}.jsonl"
+    path = tmp_path / ".aria" / "sessions" / f"{session_id}.jsonl"
     path.parent.mkdir(parents=True)
     path.write_text("not-json\n", encoding="utf-8")
 
@@ -425,7 +425,7 @@ def test_legacy_record_without_reasoning_restores_empty(tmp_path: Path) -> None:
 
     store = SessionStore(tmp_path)
     session_id = str(uuid.uuid4())
-    path = tmp_path / ".epsilon" / "sessions" / f"{session_id}.jsonl"
+    path = tmp_path / ".aria" / "sessions" / f"{session_id}.jsonl"
     path.parent.mkdir(parents=True)
     path.write_text(
         '{"type":"message","role":"assistant","content":"历史回复"}\n',
@@ -442,7 +442,7 @@ def test_invalid_reasoning_record_raises_clear_error(tmp_path: Path) -> None:
 
     store = SessionStore(tmp_path)
     session_id = str(uuid.uuid4())
-    path = tmp_path / ".epsilon" / "sessions" / f"{session_id}.jsonl"
+    path = tmp_path / ".aria" / "sessions" / f"{session_id}.jsonl"
     path.parent.mkdir(parents=True)
     path.write_text(
         '{"type":"message","role":"assistant","content":"回复","reasoning":42}\n',

@@ -535,7 +535,7 @@ def verify_patch(
     prediction_path = result_root / f"{task.instance_id}.jsonl"
     prediction_path.write_text(
         json.dumps(
-            {"instance_id": task.instance_id, "model_name_or_path": "epsilon", "model_patch": patch}
+            {"instance_id": task.instance_id, "model_name_or_path": "aria", "model_patch": patch}
         ) + "\n",
         encoding="utf-8",
     )
@@ -553,7 +553,7 @@ def verify_patch(
     ]
     completed = subprocess.run(command, cwd=result_root, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)
     (result_root / f"{task.instance_id}.harness.log").write_text(completed.stdout, encoding="utf-8")
-    report_path = result_root / f"epsilon.{run_id}.json"
+    report_path = result_root / f"aria.{run_id}.json"
     if completed.returncode != 0 and not report_path.is_file():
         return HarnessResult(False, f"官方 Harness 执行失败，退出码 {completed.returncode}")
     if not report_path.is_file():
@@ -570,7 +570,7 @@ def verify_patch(
 def _harness_diagnostic(result_root: Path, run_id: str, instance_id: str) -> str | None:
     """解释 Harness 中名称容易误导的未解析测试结果状态。"""
 
-    report_path = result_root / "logs" / "run_evaluation" / run_id / "epsilon" / instance_id / "report.json"
+    report_path = result_root / "logs" / "run_evaluation" / run_id / "aria" / instance_id / "report.json"
     if not report_path.is_file():
         return None
     try:
@@ -961,7 +961,7 @@ async def _run_task_with_environment_retry(
 def main() -> int:
     """处理真实 SWE-bench 评测的命令行参数。"""
 
-    parser = argparse.ArgumentParser(description="运行 Epsilon SWE-bench 真实任务")
+    parser = argparse.ArgumentParser(description="运行 Aria SWE-bench 真实任务")
     parser.add_argument("--confirm", action="store_true", help="确认发起真实模型请求")
     parser.add_argument("--instance-id", action="append", required=True, help="SWE-bench 任务 ID")
     parser.add_argument("--source", choices=tuple(DATASETS), default="swebench-lite")

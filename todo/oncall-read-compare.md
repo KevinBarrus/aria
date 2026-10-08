@@ -92,7 +92,7 @@ token（总量 + 按角色）、**文档级覆盖率**、**源码级覆盖率**�
 4. **跑 B**（`--arm fanout_fresh`）；
 5. **跑 C**（`--arm map_then_fork`，`--scout-mode fork`）；
 6. 产出对照表，写入 `problems/oncall-read-compare.md`（**并归档三档产物到 `evaluation-results/`**，
-   当前 A 档产物还在 `/tmp/epsilon-read-single-*`，**属易失**，必须固化）。
+   当前 A 档产物还在 `/tmp/aria-read-single-*`，**属易失**，必须固化）。
 
 ## 六、验收
 

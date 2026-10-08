@@ -67,7 +67,7 @@ def test_restore_failure_releases_session_lock(tmp_path: Path) -> None:
     session = Session(tmp_path)
     session_id = session.session_id
     session.close()
-    session_path = tmp_path / ".epsilon" / "sessions" / f"{session_id}.jsonl"
+    session_path = tmp_path / ".aria" / "sessions" / f"{session_id}.jsonl"
     session_path.write_text("not-json\n", encoding="utf-8")
 
     with pytest.raises(SessionStoreError):

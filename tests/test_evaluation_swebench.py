@@ -427,11 +427,11 @@ def test_verify_patch_reports_unparseable_harness_test_output(
 
     task = SwebenchTask("example__1", "example/repo", "base", "issue", "swebench-lite")
     run_id = "example-1"
-    (tmp_path / f"epsilon.{run_id}.json").write_text(
+    (tmp_path / f"aria.{run_id}.json").write_text(
         '{"resolved_ids": [], "infra_failure_instances": 0, "error_instances": 0}',
         encoding="utf-8",
     )
-    instance_report = tmp_path / "logs" / "run_evaluation" / run_id / "epsilon" / task.instance_id / "report.json"
+    instance_report = tmp_path / "logs" / "run_evaluation" / run_id / "aria" / task.instance_id / "report.json"
     instance_report.parent.mkdir(parents=True)
     instance_report.write_text(
         '{"example__1": {"patch_exists": true, "patch_successfully_applied": false, "infra_failure": false}}',

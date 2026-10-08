@@ -17,7 +17,7 @@
 
 ## 二、离线扫描方法
 
-扫描复用 E0 的完整 Session 历史，不调用模型。一次性脚本位于 `/tmp/epsilon-probes/replay_e0.py`，不进入仓库。
+扫描复用 E0 的完整 Session 历史，不调用模型。一次性脚本位于 `/tmp/aria-probes/replay_e0.py`，不进入仓库。
 
 - 轨迹：`evaluation-results/long-task-E0/`
 - Session：`2831ef0d-c478-43b7-925d-7db7cfe58721`

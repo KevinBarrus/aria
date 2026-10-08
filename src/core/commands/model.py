@@ -92,7 +92,7 @@ async def _create_new_config(context: CommandContext) -> None:
     if applied.context_window is not None:
         model_config["context_window"] = applied.context_window
     await _save_model_config(
-        context.project_dir / ".epsilon" / "settings.json",
+        context.project_dir / ".aria" / "settings.json",
         model_config,
     )
     context.screen.add_entry("tool", f"Switched to model: {model_name}")

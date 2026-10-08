@@ -1,4 +1,4 @@
-"""构造 epsilon 的全屏终端界面。"""
+"""构造 aria 的全屏终端界面。"""
 
 import asyncio
 import time

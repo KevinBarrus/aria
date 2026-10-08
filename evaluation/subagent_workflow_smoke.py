@@ -351,7 +351,7 @@ def main() -> int:
     settings = load_settings()
     args.output.parent.mkdir(parents=True, exist_ok=True)
     with tempfile.TemporaryDirectory(
-        prefix="epsilon-subagent-workflow-"
+        prefix="aria-subagent-workflow-"
     ) as workspace_name:
         workspace = Path(workspace_name)
         _prepare_workspace(workspace)

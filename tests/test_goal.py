@@ -115,7 +115,7 @@ def test_goal_jsonl_round_trip_and_clear(tmp_path: Path) -> None:
     restored.clear_goal()
     restored.close()
     assert Session.restore(tmp_path, session_id).get_goal() is None
-    records = [json.loads(line) for line in (tmp_path / ".epsilon/sessions" / f"{session_id}.jsonl").read_text().splitlines()]
+    records = [json.loads(line) for line in (tmp_path / ".aria/sessions" / f"{session_id}.jsonl").read_text().splitlines()]
     assert [record["type"] for record in records].count("goal") == 3
 
 

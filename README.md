@@ -1,4 +1,4 @@
-# Epsilon
+# Aria
 
 一个从零实现、可在终端直接运行的 Python Coding Agent。项目刻意保持克制：把模型调用、会话、上下文、工具、审批和 TUI 分层，便于阅读、演示和持续迭代。
 
@@ -6,7 +6,7 @@
 
 - OpenAI-compatible 模型的流式对话与推理过程展示
 - 全屏 TUI：Markdown、代码高亮、长对话滚动、Slash Command、会话选择与工具审批
-- JSONL 会话持久化；`epsilon resume` 可选择或按 ID 恢复会话
+- JSONL 会话持久化；`aria resume` 可选择或按 ID 恢复会话
 - 上下文预算、历史压缩和压缩失败的安全降级
 - 本地文件、搜索、编辑和命令工具；写操作由用户审批，独立只读工具调用可并发执行
 - 可选 stdio MCP Provider；Agent 只通过统一工具注册表调用工具
@@ -36,13 +36,13 @@ UI 编排 ── Session 持久化 ── Context Manager
 需要 Python 3.11+ 和 [uv](https://docs.astral.sh/uv/)。
 
 ```bash
-git clone https://github.com/KevinBarrus/epsilon.git
-cd epsilon
+git clone https://github.com/KevinBarrus/aria.git
+cd aria
 uv sync
-uv run epsilon
+uv run aria
 ```
 
-首次启动会引导选择服务商、填写 API Key 和模型名称，并将配置写入 `~/.epsilon/settings.json`。也可以手动创建配置：
+首次启动会引导选择服务商、填写 API Key 和模型名称，并将配置写入 `~/.aria/settings.json`。也可以手动创建配置：
 
 ```json
 {
@@ -55,18 +55,18 @@ uv run epsilon
 }
 ```
 
-Epsilon 默认从模型服务元数据读取上下文窗口；如果服务商不返回该字段，首次配置会要求显式填写 `context_window`。
+Aria 默认从模型服务元数据读取上下文窗口；如果服务商不返回该字段，首次配置会要求显式填写 `context_window`。
 
-项目目录下的 `.epsilon/settings.json` 可按字段覆盖用户级配置。不要提交包含 API Key 的配置文件。
+项目目录下的 `.aria/settings.json` 可按字段覆盖用户级配置。不要提交包含 API Key 的配置文件。
 
 stdio MCP 工具默认需要审批；确认可信的只读工具可在对应的 `mcp_stdio.trusted_read_tools` 字符串数组中按原始工具名配置。
 
 ## 使用
 
 ```bash
-uv run epsilon
-uv run epsilon resume                 # 选择历史会话
-uv run epsilon resume <session-id>    # 按 ID 恢复
+uv run aria
+uv run aria resume                 # 选择历史会话
+uv run aria resume <session-id>    # 按 ID 恢复
 ```
 
 - `Enter` 发送，`Ctrl+J` 换行，`Esc` 取消当前请求，`Ctrl+D` 退出
@@ -89,4 +89,4 @@ uv run pytest
 
 ## 当前边界
 
-Epsilon 是可运行的个人 Coding Agent，而非生产托管平台。当前评测样本有限；长任务的成本控制、更大规模基准集和更丰富的 MCP Provider 仍在持续迭代。
+Aria 是可运行的个人 Coding Agent，而非生产托管平台。当前评测样本有限；长任务的成本控制、更大规模基准集和更丰富的 MCP Provider 仍在持续迭代。

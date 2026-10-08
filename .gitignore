@@ -12,11 +12,11 @@ __pycache__/
 AGENTS.md
 CLAUDE.md
 .idea/
-/.epsilon/
+/.aria/
 /evaluation-results/
 /build/
 /dist/
 *.egg-info/
 .DS_Store
-/src/.epsilon/
+/src/.aria/
 /resume

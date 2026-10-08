@@ -2,7 +2,7 @@
 
 ## 一、设计目标
 
-上下文管理参考 Pi 的核心策略，同时保持 epsilon 的实现简洁：
+上下文管理参考 Pi 的核心策略，同时保持 aria 的实现简洁：
 
 ```text
 SessionStore：保存完整 JSONL 历史
@@ -335,7 +335,7 @@ estimated_context_tokens > context_window - reserve_tokens
 | --- | --- | --- |
 | **工具输出防火墙**（Firewall） | `src/core/artifacts.py`（`FIREWALL_THRESHOLD_CHARS = 8_000`） | 单条工具输出超过阈值时，**原文落盘**，上下文里只留**有界占位符** |
 | **陈旧输出驱逐**（Eviction） | `src/core/context.py`（`eviction_enabled` / `eviction_threshold_tokens`） | 估算上下文超过驱逐阈值时，把**最旧的完整工具输出**批量降级成占位符 |
-| **Artifact Store** | `src/core/artifacts.py`（`ArtifactStore` → `<workspace>/.epsilon/artifacts/<session>/`） | 按会话保存原文，纯文本落盘，模型需要时用**普通 `read_file` 读 `artifact://<id>`** 按行范围取回 |
+| **Artifact Store** | `src/core/artifacts.py`（`ArtifactStore` → `<workspace>/.aria/artifacts/<session>/`） | 按会话保存原文，纯文本落盘，模型需要时用**普通 `read_file` 读 `artifact://<id>`** 按行范围取回 |
 
 关键取舍：**不发明新工具、不发明新协议**。
 取回走已有的 `read_file`，URI 只是 `artifact://` 前缀；**JSONL 会话原文永不改写**——
@@ -363,7 +363,7 @@ estimated_context_tokens > context_window - reserve_tokens
    **51 次触发 = 51 次缓存前缀断裂**，缓存失效才是成本上升的直接来源
    （两档 `artifact://` 取回次数都是 0，**不是**取回开销导致的）。
 
-**第二步：离线回放定上限**（`/tmp/epsilon-probes/replay_e0.py`，读 E0 归档、0 成本）：
+**第二步：离线回放定上限**（`/tmp/aria-probes/replay_e0.py`，读 E0 归档、0 成本）：
 
 | 阶段 | 实测上下文峰值 |
 | --- | ---: |

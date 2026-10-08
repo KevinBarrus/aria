@@ -244,7 +244,7 @@ def test_workspace_path_resolver_rejects_absolute_escape(tmp_path: Path) -> None
 def _artifact_store(tmp_path: Path) -> tuple[ArtifactStore, str]:
     """创建已绑定会话并放入一段原文的 store。"""
 
-    store = ArtifactStore(tmp_path / ".epsilon" / "artifacts")
+    store = ArtifactStore(tmp_path / ".aria" / "artifacts")
     store.set_session_id("s-1")
     content = "\n".join(f"l{index}" for index in range(1, 6)) + "\n"
     artifact_id = store.save(content, session_id="s-1", source_tool="run_command")

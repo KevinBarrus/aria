@@ -37,7 +37,7 @@ def test_format_exit_summary_with_usage_and_resume_instruction() -> None:
         ChatExitInfo("11111111-1111-1111-1111-111111111111", usage)
     ) == [
         "Token usage (this run): total=150 input=120 cached=40 output=30",
-        "To continue this session, run epsilon resume "
+        "To continue this session, run aria resume "
         "11111111-1111-1111-1111-111111111111",
     ]
 

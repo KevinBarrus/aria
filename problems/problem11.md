@@ -14,7 +14,7 @@
 
 ## 问题三：模型信息未右对齐
 
-模型信息（厂商名·模型名·推理强度）没有位于状态栏最右侧。Pi 用整行字符串手动空格填充实现右对齐，epsilon 当前的 VSplit 方案未生效。
+模型信息（厂商名·模型名·推理强度）没有位于状态栏最右侧。Pi 用整行字符串手动空格填充实现右对齐，aria 当前的 VSplit 方案未生效。
 
 ## 问题四：状态栏字体颜色
 
@@ -22,7 +22,7 @@
 
 ## 问题五：当前目录冗长
 
-状态栏显示 `/home/kevinbarrus/projects/epsilon`，应像 Pi 一样把 home 目录缩写为 `~`（`~/projects/epsilon`）。
+状态栏显示 `/home/kevinbarrus/projects/aria`，应像 Pi 一样把 home 目录缩写为 `~`（`~/projects/aria`）。
 
 ## 问题六：上下文信息顺序
 
@@ -30,7 +30,7 @@
 
 ## 问题七：新建会话不显示 logo
 
-新建会话应先显示 logo（`epsilon v{version}`，Pi 风格加粗 accent 色）。
+新建会话应先显示 logo（`aria v{version}`，Pi 风格加粗 accent 色）。
 
 ## 问题八：缺少前置信息
 

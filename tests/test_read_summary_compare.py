@@ -82,7 +82,7 @@ def test_prepare_writes_baseline(tmp_path: Path) -> None:
         assert baseline["source_hash"] == baseline["copy_hash"]
         assert baseline["files"] == 1
         assert workspace.name == "workspace"
-        assert workspace.parent.name.startswith("epsilon-read-single-")
+        assert workspace.parent.name.startswith("aria-read-single-")
     finally:
         import shutil
 

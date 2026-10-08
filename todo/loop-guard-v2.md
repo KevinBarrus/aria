@@ -79,7 +79,7 @@ v1 的 B = "连续 N 轮没有成功的非读调用" → 在"合法探索期"（
 - 命令（先 `--prepare`，再执行）：
   ```
   uv run python -m evaluation.big_task_single_goal --confirm --delegate \
-    --isolate-workers --source-core /tmp/epsilon-single-goal-iq3v424t/workspace/src/core
+    --isolate-workers --source-core /tmp/aria-single-goal-iq3v424t/workspace/src/core
   ```
 - **观测重点**（写进 REPORT.md）：
   1. `role_loop_guard_injections`：父 / Worker / Reviewer 各触发几次；

@@ -30,7 +30,7 @@
 
 ```text
 Token usage (this run): total=... input=... cached=... output=...
-To continue this session, run epsilon resume <session-id>
+To continue this session, run aria resume <session-id>
 ```
 
 4. 用量只统计本次进程收到的真实 `UsageEvent`；未开启或服务端不支持真实用量时显示 `Token usage: unavailable`
@@ -114,7 +114,7 @@ To continue this session, run epsilon resume <session-id>
 
 - Ctrl+D 退出后，本次对话仍保留在当前终端回滚区
 - 退出后展示真实的本次运行用量或明确标注不可用
-- 退出后展示正确的 `epsilon resume <session-id>` 指引
+- 退出后展示正确的 `aria resume <session-id>` 指引
 - 普通滚轮和触摸板可以查看完整历史
 - Ctrl+滚轮由宿主终端完成缩放
 - ↑/↓ 保持输入框编辑和输入历史语义

@@ -12,7 +12,7 @@ def test_default_logo_renders_stable_art() -> None:
 
     text = to_plain_text(logo)
 
-    assert "EPSILON" in text
+    assert "ARIA" in text
     assert len(text.splitlines()) >= 8
 
 

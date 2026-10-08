@@ -8,7 +8,7 @@
 
 ### 7.1 配置源迁移（.env → settings.json）
 
-- `config.py`：`load_settings()` 改为读用户级 `~/.epsilon/settings.json` + 项目级 `.epsilon/settings.json`，项目级字段级覆盖用户级
+- `config.py`：`load_settings()` 改为读用户级 `~/.aria/settings.json` + 项目级 `.aria/settings.json`，项目级字段级覆盖用户级
 - settings.json 不存厂商名，只存 `base_url` / `api_key` / `model_name` 及可选预算字段
 - 移除 python-dotenv 依赖（pyproject.toml）
 - 更新 `main.py`、`evaluation/*.py` 的 `load_settings(env_path)` 调用点
@@ -16,14 +16,14 @@
 
 ### 7.2 首次启动引导
 
-- 检测 `~/.epsilon/settings.json` 缺失 → 进入引导：厂商选择器 → 输入 API key → 拉取模型列表 → 选默认模型 → 原子写入
+- 检测 `~/.aria/settings.json` 缺失 → 进入引导：厂商选择器 → 输入 API key → 拉取模型列表 → 选默认模型 → 原子写入
 - prompt-toolkit 独立小 app（复用 SessionPicker 模式），英文操作提示（Space 选择/取消、Enter 确认、Esc 退出）
 - `--config` 参数跳过引导；Esc 取消安全退出；先写临时文件再原子重命名，保证不写半截文件
 
 ### 7.3 skill 目录迁移与多根扫描
 
-- 项目 skill 从 `skills/` 迁移到 `.epsilon/skills/`
-- `SkillManager` 支持多根扫描：项目 `.epsilon/skills/` + 全局 `~/.agents/skills/`，每根下 `<name>/SKILL.md`
+- 项目 skill 从 `skills/` 迁移到 `.aria/skills/`
+- `SkillManager` 支持多根扫描：项目 `.aria/skills/` + 全局 `~/.agents/skills/`，每根下 `<name>/SKILL.md`
 - 扫描与解析逻辑复用
 
 ### 7.4 skill 来源标注与重名处理
@@ -35,7 +35,7 @@
 ### 7.5 /model 命令
 
 - 展示当前配置、当前端点 `/models` 可用模型列表，以及「new config」选项
-- new config：选厂商（预设 + 手动配置）→ 输入 API key → 拉取模型 → 保存到项目级 `.epsilon/settings.json`
+- new config：选厂商（预设 + 手动配置）→ 输入 API key → 拉取模型 → 保存到项目级 `.aria/settings.json`
 - 热切换：`agent_loop.swap_client()` 更新主请求客户端；`ui.py` 的 `build_context` 闭包改用可变容器取当前客户端；重建 `ContextManager` budget；只在命令空闲间隙切换，不中断进行中的流式输出；不动已持久化的会话状态
 - `/models` 拉取失败降级：只显示当前 `model_name` + 手动输入
 - 项目级配置 v1 只做 model（含强度）；MCP 记为项目级但 v1 不改 UI

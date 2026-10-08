@@ -31,7 +31,7 @@
 
 - 新增依赖 pygments
 - markdown.py 代码块：识别 ```语言名，用 Pygments 分词，token 映射到样式类（md-tok-keyword/string/comment/number/function 等）
-- 语言注册表（LANGUAGE_REGISTRY）：默认 Pygments 自动识别；特殊语言（如 epsilon 专属）可覆盖
+- 语言注册表（LANGUAGE_REGISTRY）：默认 Pygments 自动识别；特殊语言（如 aria 专属）可覆盖
 - 新增语言只需注册表加一行；颜色集中在 theme.py
 
 ## 问题五：思考过程展示

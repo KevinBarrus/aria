@@ -78,7 +78,7 @@ def subset_scope(relative: Path) -> bool:
 def prepare(arm: str, source: Path = SOURCE) -> Path:
     """只复制三个子系统的生产源码，形成一个"验证可行"的中等语料。"""
 
-    root = Path(tempfile.mkdtemp(prefix=f"epsilon-mediumgate-{arm}-"))
+    root = Path(tempfile.mkdtemp(prefix=f"aria-mediumgate-{arm}-"))
     workspace = root / "workspace"
     files = 0
     total_bytes = 0
@@ -172,7 +172,7 @@ def main() -> int:
     if not args.confirm or args.workspace is None or not args.arm:
         parser.error("真机运行需要 --arm、--workspace 与 --confirm")
     workspace = args.workspace.resolve()
-    if not workspace.is_dir() or not workspace.parent.name.startswith("epsilon-mediumgate-"):
+    if not workspace.is_dir() or not workspace.parent.name.startswith("aria-mediumgate-"):
         parser.error("workspace 必须是本脚本创建的独立副本")
     result = asyncio.run(run(workspace, args.arm, gate_enabled=not args.no_gate))
     output = workspace.parent / "result.json"

@@ -114,6 +114,6 @@ E1 `evaluation-results/long-task-E1/long_task.jsonl`。
 - E0 原始结果：`evaluation-results/long-task-E0/`
 - E1 原始结果：`evaluation-results/long-task-E1/`
 - 无效运行归档：`evaluation-results/long-task-E0-invalid/`、`long-task-E0-invalid-2/`、`long-task-E1-partial-balance/`
-- 分析脚本（临时）：`/tmp/epsilon-probes/replay_e0.py`、`/tmp/epsilon-probes/replay_sweep.py`
+- 分析脚本（临时）：`/tmp/aria-probes/replay_e0.py`、`/tmp/aria-probes/replay_sweep.py`
 
 以上 E0/E1 原始结果一律原样保留，本复盘不改写其中任何数字。

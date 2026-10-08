@@ -12,7 +12,7 @@
 
 ## 瑕疵 2：工作区路径未显式注入
 
-**现状**：父 Agent 不知道自己的工作区路径，冒烟里把临时工作区误写成项目根目录 `/home/kevinbarrus/projects/epsilon`，导致 Reviewer 的绝对路径读取落在工作区外被拒。
+**现状**：父 Agent 不知道自己的工作区路径，冒烟里把临时工作区误写成项目根目录 `/home/kevinbarrus/projects/aria`，导致 Reviewer 的绝对路径读取落在工作区外被拒。
 
 **改法**：
 
@@ -31,7 +31,7 @@
 修复后重跑：
 
 ```bash
-cd /home/kevinbarrus/projects/epsilon
+cd /home/kevinbarrus/projects/aria
 uv run python -m evaluation.subagent_workflow_smoke --confirm \
   --output evaluation-results/subagent-workflow-smoke.jsonl
 ```
@@ -42,7 +42,7 @@ uv run python -m evaluation.subagent_workflow_smoke --confirm \
 
 1. 全量测试通过（当前 712 项）；
 2. `reviewer_context` 原文里是否出现"实际改动"的表述（如"从 return a+b 改成 return a*b"之类），而不只是"应实现 a*b"；
-3. `reviewer_read_paths` 是否**全部是正确路径**（相对路径或正确的临时工作区路径），不再出现 `/home/kevinbarrus/projects/epsilon` 这种误写；
+3. `reviewer_read_paths` 是否**全部是正确路径**（相对路径或正确的临时工作区路径），不再出现 `/home/kevinbarrus/projects/aria` 这种误写；
 4. 委派链仍为 `spawn_agent → spawn_worker → spawn_reviewer`、测试 OK、文件改对；
 5. 各角色 token 无缺失。
 

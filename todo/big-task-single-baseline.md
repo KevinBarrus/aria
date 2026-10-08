@@ -37,7 +37,7 @@
 
 - 同样任务（把副本 `src/core` 从 Python 重构成 TypeScript）、同样模型（`deepseek-flash` = V4.1 Flash）、`thinking=high`；
 - **委派关闭**（`delegation_tools_registered: False`）；
-- **副本机制**：复制 epsilon（排除 `.venv`/`.git`/`evaluation-results`/`__pycache__`/`.epsilon`），模型只改副本，harness 从原代码跑；
+- **副本机制**：复制 aria（排除 `.venv`/`.git`/`evaluation-results`/`__pycache__`/`.aria`），模型只改副本，harness 从原代码跑；
 - 全程记录 `events.jsonl`。
 
 ## 验收标准
@@ -52,7 +52,7 @@
 
 ## 约束
 
-- 只改评测脚本（cap → 安全网 + 进度采样），不改 Epsilon 生产代码；
+- 只改评测脚本（cap → 安全网 + 进度采样），不改 Aria 生产代码；
 - 诚实记录：模型自称完成但实际未完成，必须如实标注；
 - 本轮只跑**单 Agent 对照**，跑完停下等指令，再跑多 Agent 实验。
 

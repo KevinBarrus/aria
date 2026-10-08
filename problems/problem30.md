@@ -6,7 +6,7 @@
 
 ### 背景
 
-Epsilon 目前是单 Agent：一次会话里一个模型负责"读代码 → 改文件 → 跑测试"的全过程。问题在于，探索、检索这类工作会产生大量中间内容（搜索结果、日志、文件片段），它们会涌入主上下文，占用 token 且后续不再引用。
+Aria 目前是单 Agent：一次会话里一个模型负责"读代码 → 改文件 → 跑测试"的全过程。问题在于，探索、检索这类工作会产生大量中间内容（搜索结果、日志、文件片段），它们会涌入主上下文，占用 token 且后续不再引用。
 
 多 Agent 的解法：把这类工作**委派给子 Agent**，子 Agent 在自己的上下文里独立完成，只返回有界摘要，主上下文保持干净。这正是 oh-my-pi（task 工具）、codex（spawn_agent 工具）、ClaudeCode（subagents）三家共同的做法。
 
@@ -209,4 +209,4 @@ spawn_reviewer(task)
 | oh-my-pi | task 工具显式调用 | 独立 session + 结构化输出 | 默认 worktree（依赖 git，可关） |
 | codex | spawn_agent 工具显式调用 | 独立 Thread | 无（共享 cwd + 并发槽位） |
 | ClaudeCode | 自动委派 + 显式 | 独立 context window，只回 summary | 可选（--worktree flag） |
-| **Epsilon（本方案）** | 角色专用工具显式调用 | 独立 context，只回有界摘要 | 共享工作区，写子 Agent 串行 |
+| **Aria（本方案）** | 角色专用工具显式调用 | 独立 context，只回有界摘要 | 共享工作区，写子 Agent 串行 |

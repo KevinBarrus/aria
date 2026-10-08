@@ -63,7 +63,7 @@ def create_worktree(repo_root: Path, task_id: str) -> Path:
         _require_clean(root)
         slug = re.sub(r"[^A-Za-z0-9_-]", "-", task_id).strip("-")[:24] or "task"
         suffix = uuid4().hex[:12]
-        branch = f"epsilon/worker-{slug}-{suffix}"
+        branch = f"aria/worker-{slug}-{suffix}"
         path = root.parent / f".{root.name}-worker-{slug}-{suffix}"
         _git(root, "worktree", "add", "-b", branch, str(path), "HEAD")
         return path
@@ -87,7 +87,7 @@ def merge_branch(repo_root: Path, branch: str) -> MergeResult:
     with _GIT_LOCK:
         root = _checkout_root(repo_root)
         _require_clean(root)
-        if not branch.startswith("epsilon/worker-"):
+        if not branch.startswith("aria/worker-"):
             raise WorktreeError("refusing to merge an unrelated branch")
         _git(root, "rev-parse", "--verify", branch)
         if _git(root, "merge-base", "--is-ancestor", branch, "HEAD", check=False).returncode == 0:

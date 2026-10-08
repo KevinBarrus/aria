@@ -152,5 +152,5 @@ infra_failure = false
 
 - 不修改 SWE-bench 数据集、参考补丁或隐藏测试
 - 不用“忽略所有异常”伪造通过率
-- 不在普通 Epsilon 运行路径中加入 SWE-bench 专属过滤逻辑
+- 不在普通 Aria 运行路径中加入 SWE-bench 专属过滤逻辑
 - 不把构建产物过滤扩大为删除基线中本来存在的项目文件

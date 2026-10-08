@@ -29,7 +29,7 @@
 
 ## 任务 3：重跑单 Agent（无人工预算）
 
-- 任务：复制 epsilon 到副本，把副本 `src/core` 从 Python 重构成等价 TypeScript；harness 从原代码跑；
+- 任务：复制 aria 到副本，把副本 `src/core` 从 Python 重构成等价 TypeScript；harness 从原代码跑；
 - 模型：`deepseek-flash`，`thinking=high`；委派关闭（单 Agent）；
 - goal objective：`把副本 src/core 的全部 Python 模块重构成等价的 TypeScript，直到全部模块都有对应 TS 实现且类型检查通过`；
 - 预算：**只有安全熔断**（50M / 2 小时），**跑到 `goal complete` 或熔断**；

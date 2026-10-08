@@ -36,7 +36,7 @@ logo 与引导整体居中显示（正式感），按终端宽度计算缩进。
 
 ## 问题六：working/重试展示
 
-- epsilon 有重试机制（agent_loop._retry_stream，network→retry max_attempts=2，指数退避）但无 UI 展示
+- aria 有重试机制（agent_loop._retry_stream，network→retry max_attempts=2，指数退避）但无 UI 展示
 - 参考 Pi：WorkingStatusIndicator（spinner 帧 ⠋⠙⠹⠸⠼⠴⠦⠧⠇⠏ 80ms + 消息）、RetryStatusIndicator（Retrying (n/m) in Xs... 倒计时）
 - 模型思考中/工具执行中显示 working + 耗时；重试时显示 Retrying + 倒计时
 
@@ -61,7 +61,7 @@ logo 与引导整体居中显示（正式感），按终端宽度计算缩进。
 
 ## 问题十一：缩放（已定位根因）
 
-prompt_toolkit 启用 SGR 1006 鼠标模式（\x1b[?1006h）→ Windows Terminal 把 Ctrl+滚轮发给应用（不保留为终端缩放）→ epsilon 发 OSC 50 不被支持 → 缩放失效。
+prompt_toolkit 启用 SGR 1006 鼠标模式（\x1b[?1006h）→ Windows Terminal 把 Ctrl+滚轮发给应用（不保留为终端缩放）→ aria 发 OSC 50 不被支持 → 缩放失效。
 
 修复：自定义输出层不启用 1006（只 1000+1003）→ Windows Terminal 恢复原生 Ctrl+滚轮缩放，拖选/滚轮仍工作。
 
